@@ -1,0 +1,21 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<polymer-element name="post-detail" attributes="post edit">
+  <template>
+    <link rel="stylesheet" href="post-detail.css">
+    <div class="post">
+      <header class="header"><h1><a>{{post.title}}</a>/h1><p class="meta">{{post.created_at}} • posted by {{post.author}}</p></header>
+      <article class="content">{{ post.abstract }}</article>
+    </div>
+
+    <span>Update text to change the greeting.</span>
+    <input type="text" value="{{  }}">
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        greeting: '\'Allo'
+      });
+    })();
+  </script>
+</polymer-element>
