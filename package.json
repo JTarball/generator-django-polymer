@@ -1,7 +1,7 @@
 {
   "name": "generator-django-polymer",
   "version": "0.0.1",
-  "description": "Yeoman generator that scaffolds out a Django project with Polymer",
+  "description": "Yeoman generator that scaffolds out a Django project with Polymer for the frontend",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
