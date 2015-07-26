@@ -165,7 +165,7 @@ var DjangoPolymerGenerator = generators.Base.extend({
         });
 
         // static
-        this.fs.copyTpl(this.templatePath('backend/static/'), this.destinationPath('project/static/'));
+        //this.fs.copyTpl(this.templatePath('backend/static/'), this.destinationPath('project/static/'));
 
         // templates
         this.fs.copyTpl(this.templatePath('backend/templates/'), this.destinationPath('project/templates/'));
