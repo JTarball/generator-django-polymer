@@ -13,7 +13,7 @@ var DjangoPolymerGenerator = generators.Base.extend({
         this.log('Firing generator polymer...');
         this.composeWith('polymer', {
             options: {
-                "skip-install": true
+                "skip-install": false
             }
         });
     },
@@ -70,17 +70,19 @@ var DjangoPolymerGenerator = generators.Base.extend({
             type: 'list',
             name: 'databaseEngine',
             message: 'Which database would you like to use? (mysql only available at present)',
-            choices: [{
-                    value: 'mysql',
-                    name: 'MySQL',
-                }
+            choices: [
+                //{
+                //    value: 'mysql',
+                //    name: 'MySQL',
+                //}
                 //, {
                 //    value: 'sqlite3',
                 //    name: 'SQLite3'
-                //}, {
-                //    value: 'postgresql',
-                //    name: 'PostgreSQL'
-                //}
+                //}, 
+                {
+                   value: 'postgresql',
+                   name: 'PostgreSQL'
+                }
             ]
         }, {
             type: 'input',
