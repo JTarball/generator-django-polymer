@@ -25,22 +25,44 @@ var DjangoPolymerGenerator = generators.Base.extend({
         this.log(yosay("Welcome to the awesome Django Polymer Generator.\nI'm fired up..."));
         this.log("I have a number of questions.. it might take a min or so... but it will be worth it... ");
 
+        function isDockerized(answers) {
+            return !answers.forDocker;
+        }
+
+
         var prompts = [{
+            type: 'input',
+            name: 'forDocker',
+            message: 'Do you want to dockerize this generator? (i.e. Are you using Docker?) ',
+            default: true
+        }, {
+            when: function(answers) {
+                return isDockerized(answers);
+            },
             type: 'input',
             name: 'projectName',
             message: 'What is your Django project name?',
             default: folderName
         }, {
+            when: function(answers) {
+                return isDockerized(answers);
+            },
             type: 'input',
             name: 'adminName',
             message: 'What is the admin name?',
             default: 'Your Name'
         }, {
+            when: function(answers) {
+                return isDockerized(answers);
+            },
             type: 'input',
             name: 'adminEmail',
             message: 'What is the admin email?',
             default: 'your_email@domain.com'
         }, {
+            when: function(answers) {
+                return isDockerized(answers);
+            },
             type: 'list',
             name: 'djangoVersion',
             message: 'Which version of Django would you like to use?',
@@ -50,6 +72,7 @@ var DjangoPolymerGenerator = generators.Base.extend({
         }];
 
         this.prompt(prompts, function(props) {
+            this.forDocker = props.forDocker;
             this.projectName = props.projectName;
             this.adminName = props.adminName;
             this.adminEmail = props.adminEmail;
@@ -60,7 +83,12 @@ var DjangoPolymerGenerator = generators.Base.extend({
     },
 
     askForDatabaseInfo: function() {
-        var cb = this.async();
+        var done = this.async();
+        if (this.forDocker)
+        {
+            this.databaseEngine = 'postgresql';
+            done();
+        }
 
         function isActive(answers) {
             return answers && answers.databaseEngine && (answers.databaseEngine == 'mysql' || answers.databaseEngine == 'postgresql');
@@ -69,7 +97,7 @@ var DjangoPolymerGenerator = generators.Base.extend({
         var prompts = [{
             type: 'list',
             name: 'databaseEngine',
-            message: 'Which database would you like to use? (mysql only available at present)',
+            message: 'Which database would you like to use? (postgresql only available at present)',
             choices: [
                 //{
                 //     value: 'mysql',
@@ -133,7 +161,7 @@ var DjangoPolymerGenerator = generators.Base.extend({
                 this.databasePort = props.databasePort;
             }
 
-            cb();
+            done();
         }.bind(this));
 
     },
@@ -143,12 +171,40 @@ var DjangoPolymerGenerator = generators.Base.extend({
         this.secretKey = require('crypto').randomBytes(Math.ceil(50 * 3 / 4)).toString('base64');
         this.releaseVersion = '0.0.1';
 
+        /***** Dockerfile Support *****/
+        // Ok if using docker - we will let docker decide what the default should be 
+        // override to environment variables
+        if (this.forDocker)
+        {
+            this.adminName = "os.environ.get('ADMIN_NAME')";
+            this.adminEmail = "os.environ.get('ADMIN_EMAIL')";
+            this.databaseName = "os.environ.get('DB_NAME')";
+            this.databaseUser = "os.environ.get('DB_USER')";
+            this.databasePassword = "os.environ.get('DB_PASSWORD')";
+            this.databaseHost = "os.environ.get('DB_HOST')";
+            this.databasePort = "os.environ.get('DB_PORT')";
+        }
+
         /***** Project folder *****/
+        this.fs.copyTpl(this.templatePath('manage.py'), this.destinationPath('manage.py'));
+        this.fs.copyTpl(this.templatePath('README.md'), this.destinationPath('README_backend.md'));
+
+
+        this.fs.copyTpl(this.templatePath('backend/README.md'), this.destinationPath('backend/README.md'));
+        this.fs.copyTpl(this.templatePath('backend/urls.py'), this.destinationPath('backend/urls.py'));
+
+        // apps
+        this.fs.copyTpl(this.templatePath('backend/apps/'), this.destinationPath('backend/apps/'));
+
         // settings
-        this.fs.copyTpl(this.templatePath('backend/settings/__init__.py'), this.destinationPath('project/settings/__init__.py'));
-        this.fs.copyTpl(this.templatePath('backend/settings/README.md'), this.destinationPath('project/settings/README.md'));
-        this.fs.copyTpl(this.templatePath('backend/settings/test.py'), this.destinationPath('project/settings/test.py'));
-        this.fs.copyTpl(this.templatePath('backend/settings/base.py'), this.destinationPath('project/settings/base.py'), {
+        this.fs.copyTpl(this.templatePath('backend/settings/__init__.py'), this.destinationPath('backend/settings/__init__.py'));
+        this.fs.copyTpl(this.templatePath('backend/settings/README.md'), this.destinationPath('backend/settings/README.md'));
+        this.fs.copyTpl(this.templatePath('backend/settings/test.py'), this.destinationPath('backend/settings/test.py'));
+
+
+
+
+        this.fs.copyTpl(this.templatePath('backend/settings/base.py'), this.destinationPath('backend/settings/base.py'), {
             generator_version: this.releaseVersion,
             secret_key: this.secretKey,
             admin_name: this.adminName,
@@ -160,40 +216,45 @@ var DjangoPolymerGenerator = generators.Base.extend({
             db_host: this.databaseHost,
             db_port: this.databasePort
         });
-        this.fs.copyTpl(this.templatePath('backend/settings/dev.py'), this.destinationPath('project/settings/dev.py'), {
+        this.fs.copyTpl(this.templatePath('backend/settings/dev.py'), this.destinationPath('backend/settings/dev.py'), {
             installed_apps: "'debug_toolbar',\n        'django_nose', # testing - better functionality\n        'django_dynamic_fixture', # testing - fixtures (best test integration with fixtures. (dynamic data generation)\n"
         });
 
         // static
-        //this.fs.copyTpl(this.templatePath('backend/static/'), this.destinationPath('project/static/'));
+        //this.fs.copyTpl(this.templatePath('backend/static/'), this.destinationPath(/static/'));
 
         // templates
-        this.fs.copyTpl(this.templatePath('backend/templates/'), this.destinationPath('project/templates/'));
+        this.fs.copyTpl(this.templatePath('backend/templates/'), this.destinationPath('backend/templates/'));
+
+        // test factories
+        this.fs.copyTpl(this.templatePath('backend/test_factories/'), this.destinationPath('backend/test_factories/'));
 
         // bin
-        this.fs.copyTpl(this.templatePath('backend/bin/run.py'), this.destinationPath('project/bin/run.py'));
+        this.fs.copyTpl(this.templatePath('backend/bin/run.py'), this.destinationPath('backend/bin/run.py'));
 
         // utils
-        this.fs.copyTpl(this.templatePath('backend/utils/__init__.py'), this.destinationPath('project/utils/__init__.py'));
-        this.fs.copyTpl(this.templatePath('backend/utils/README.md'), this.destinationPath('project/utils/README.md'));
-        this.fs.copyTpl(this.templatePath('backend/utils/logger.py'), this.destinationPath('project/utils/logger.py'));
-        this.fs.copyTpl(this.templatePath('backend/utils/colours.py'), this.destinationPath('project/utils/colours.py'));
-        this.fs.copyTpl(this.templatePath('backend/utils/messages.py'), this.destinationPath('project/utils/messages.py'));
+        this.fs.copyTpl(this.templatePath('backend/utils/__init__.py'), this.destinationPath('backend/utils/__init__.py'));
+        this.fs.copyTpl(this.templatePath('backend/utils/README.md'), this.destinationPath('backend/utils/README.md'));
+        this.fs.copyTpl(this.templatePath('backend/utils/logger.py'), this.destinationPath('backend/utils/logger.py'));
+        this.fs.copyTpl(this.templatePath('backend/utils/colours.py'), this.destinationPath('backend/utils/colours.py'));
+        this.fs.copyTpl(this.templatePath('backend/utils/messages.py'), this.destinationPath('backend/utils/messages.py'));
 
         // views
-        this.fs.copyTpl(this.templatePath('backend/views/__init__.py'), this.destinationPath('project/views/__init__.py'));
-        this.fs.copyTpl(this.templatePath('backend/views/README.md'), this.destinationPath('project/views/README.md'));
-        this.fs.copyTpl(this.templatePath('backend/views/mixins.py'), this.destinationPath('project/views/mixins.py'));
+        this.fs.copyTpl(this.templatePath('backend/views/__init__.py'), this.destinationPath('backend/views/__init__.py'));
+        this.fs.copyTpl(this.templatePath('backend/views/README.md'), this.destinationPath('backend/views/README.md'));
+        this.fs.copyTpl(this.templatePath('backend/views/mixins.py'), this.destinationPath('backend/views/mixins.py'));
 
     },
 
     // Modify Polymer Generator to make compatible with a Django Project
     DjangoifyPolymerGenerator: function() {
+        //this.log(yosay("Making some special modifications to structure..."));
         // move bower_components
         //this.fs.move(
         //  this.templatePath('bower_components'),
         //  this.destinationPath('projects/static/bower_components')
         //);
+        
     },
 
     // Finally,

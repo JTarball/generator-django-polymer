@@ -1,6 +1,7 @@
 {
   "name": "generator-django-polymer",
-  "version": "0.0.1",
+  "version": "0.0.1", 
+   "//": "Remember to change index.js if the version number changes",
   "description": "Yeoman generator that scaffolds out a Django project with Polymer for the frontend",
   "main": "index.js",
   "scripts": {
