@@ -111,6 +111,9 @@ var DjangoPolymerGenerator = generators.Base.extend({
                 }
             ]
         }, {
+            when: function(answers) {
+                return isActive(answers) && !this.forDocker;
+            },
             type: 'input',
             name: 'databaseName',
             message: 'Please enter the database name',
