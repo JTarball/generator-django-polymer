@@ -84,17 +84,15 @@ var DjangoPolymerGenerator = generators.Base.extend({
 
     askForDatabaseInfo: function() {
         var done = this.async();
-        if (this.forDocker)
-        {
-            this.databaseEngine = 'postgresql';
-            done();
-        }
 
         function isActive(answers) {
             return answers && answers.databaseEngine && (answers.databaseEngine == 'mysql' || answers.databaseEngine == 'postgresql');
         }
 
         var prompts = [{
+            when: function(answers) {
+                return isActive(answers) && !this.forDocker;
+            },
             type: 'list',
             name: 'databaseEngine',
             message: 'Which database would you like to use? (postgresql only available at present)',
@@ -119,7 +117,7 @@ var DjangoPolymerGenerator = generators.Base.extend({
             default: this.projectName
         }, {
             when: function(answers) {
-                return isActive(answers);
+                return isActive(answers) && !this.forDocker;
             },
             type: 'input',
             name: 'databaseUser',
@@ -127,14 +125,14 @@ var DjangoPolymerGenerator = generators.Base.extend({
             default: 'root'
         }, {
             when: function(answers) {
-                return isActive(answers);
+                return isActive(answers) && !this.forDocker;
             },
             type: 'input',
             name: 'databasePassword',
             message: 'Please enter the database password'
         }, {
             when: function(answers) {
-                return isActive(answers);
+                return isActive(answers) && !this.forDocker;
             },
             type: 'input',
             name: 'databaseHost',
@@ -142,7 +140,7 @@ var DjangoPolymerGenerator = generators.Base.extend({
             default: 'localhost'
         }, {
             when: function(answers) {
-                return isActive(answers);
+                return isActive(answers) && !this.forDocker;
             },
             type: 'input',
             name: 'databasePort',
