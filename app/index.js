@@ -31,9 +31,9 @@ var DjangoPolymerGenerator = generators.Base.extend({
 
 
         var prompts = [{
-            type: 'input',
+            type: 'confirm',
             name: 'forDocker',
-            message: 'Do you want to dockerize this generator? (i.e. Are you using Docker?) ',
+            message: 'Do you want to dockerize this generator? (i.e. Are you using Docker?)',
             default: true
         }, {
             when: function(answers) {
