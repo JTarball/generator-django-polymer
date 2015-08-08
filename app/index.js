@@ -185,12 +185,8 @@ var DjangoPolymerGenerator = generators.Base.extend({
             this.databasePassword = "os.environ.get('DB_PASSWORD')";
             this.databaseHost = "os.environ.get('DB_HOST')";
             this.databasePort = "os.environ.get('DB_PORT')";
-
-            logging.DEBUG
-            DEV_SETTINGS = <%= django_dev_settings %>
-            LOG_LEVEL = <%= django_log_level %> 
-
-
+            this.devSettings = "os.environ.get('DJ_DEV_SETTINGS')";
+            this.logLevel = "os.environ.get('DJ_LOG_LEVEL')";
         }
 
         /***** Project folder *****/
