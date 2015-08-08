@@ -218,7 +218,9 @@ var DjangoPolymerGenerator = generators.Base.extend({
             db_user: this.databaseUser,
             db_password: this.databasePassword,
             db_host: this.databaseHost,
-            db_port: this.databasePort
+            db_port: this.databasePort,
+            dj_loglevel: this.logLevel,
+            dj_devsettings: this.devSettings
         });
         this.fs.copyTpl(this.templatePath('backend/settings/dev.py'), this.destinationPath('backend/settings/dev.py'), {
             installed_apps: "'debug_toolbar',\n        'django_nose', # testing - better functionality\n        'django_dynamic_fixture', # testing - fixtures (best test integration with fixtures. (dynamic data generation)\n"
@@ -249,7 +251,7 @@ var DjangoPolymerGenerator = generators.Base.extend({
         this.fs.copyTpl(this.templatePath('backend/views/mixins.py'), this.destinationPath('backend/views/mixins.py'));
 
         // for logging
-        this.fs.copyTpl(this.templatePath('var/log/project.log'), this.destinationPath('var/log/project.log'));        
+        this.fs.copyTpl(this.templatePath('var/log/project.log'), this.destinationPath('var/log/project.log'));
 
     },
 

@@ -14,8 +14,8 @@ from backend.utils import logger
 # Django settings for project.
 DEBUG = False  # As of Django 1.5 all logging messages reaching the django logger are sent to Console if (DEBUG=True)
 TEMPLATE_DEBUG = False
-DEV_SETTINGS = <%= DJ_DEV_SETTING %>
-LOG_LEVEL = <%= DJ_LOG_LEVEL %> 
+DEV_SETTINGS = <%= dj_devsettings %>
+LOG_LEVEL = <%= dj_loglevel %> 
 
 # General Directory Structure
 # +++ apps
