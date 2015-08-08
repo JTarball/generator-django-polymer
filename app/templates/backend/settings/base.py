@@ -81,7 +81,7 @@ sys.path.append(APP_ROOT)
 # (This should be unique if this page was used created using generator-django-polymer)
 SECRET_KEY = '<%= secret_key %>'
 
-ADMINS = ((<%= admin_name %>, <%= admin_email %>),)
+ADMINS = ((<%- admin_name %>, <%- admin_email %>),)
 
 MANAGERS = ADMINS
 
