@@ -55,12 +55,12 @@ LOG_LEVEL = <%= dj_loglevel %>
 
 DATABASES = {
     'default': {
-        'ENGINE':   <%= db_engine %>,                # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME':     <%= db_name %>,                  # Or path to database file if using sqlite3.
-        'USER':     <%= db_user %>,                  # Not used with sqlite3.
-        'PASSWORD': <%= db_password %>,              # Not used with sqlite3.
-        'HOST':     <%= db_host %>,                  # Set to empty string for localhost. Not used with sqlite3.
-        'PORT':     <%= db_port %>,                  # Set to empty string for default. Not used with sqlite3.
+        'ENGINE':   <%- db_engine %>,                # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME':     <%- db_name %>,                  # Or path to database file if using sqlite3.
+        'USER':     <%- db_user %>,                  # Not used with sqlite3.
+        'PASSWORD': <%- db_password %>,              # Not used with sqlite3.
+        'HOST':     <%- db_host %>,                  # Set to empty string for localhost. Not used with sqlite3.
+        'PORT':     <%- db_port %>,                  # Set to empty string for default. Not used with sqlite3.
     }
 }
 
