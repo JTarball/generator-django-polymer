@@ -171,13 +171,13 @@ var DjangoPolymerGenerator = generators.Base.extend({
         // create secret key
         this.secretKey = require('crypto').randomBytes(Math.ceil(50 * 3 / 4)).toString('base64');
         this.releaseVersion = '0.0.1';
-
+        // Currently only support postgres
+        this.databaseEngine = 'django.db.backends.postgresql_psycopg2';
         /***** Dockerfile Support *****/
         // Ok if using docker - we will let docker decide what the default should be 
         // override to environment variables
         if (this.forDocker)
         {
-            this.databaseEngine = "postgresql";
             this.adminName = "os.environ.get('ADMIN_NAME')";
             this.adminEmail = "os.environ.get('ADMIN_EMAIL')";
             this.databaseName = "os.environ.get('DB_NAME')";
