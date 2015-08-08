@@ -177,6 +177,7 @@ var DjangoPolymerGenerator = generators.Base.extend({
         // override to environment variables
         if (this.forDocker)
         {
+            this.databaseEngine = "postgresql";
             this.adminName = "os.environ.get('ADMIN_NAME')";
             this.adminEmail = "os.environ.get('ADMIN_EMAIL')";
             this.databaseName = "os.environ.get('DB_NAME')";
@@ -184,13 +185,19 @@ var DjangoPolymerGenerator = generators.Base.extend({
             this.databasePassword = "os.environ.get('DB_PASSWORD')";
             this.databaseHost = "os.environ.get('DB_HOST')";
             this.databasePort = "os.environ.get('DB_PORT')";
+
+            logging.DEBUG
+            DEV_SETTINGS = <%= django_dev_settings %>
+            LOG_LEVEL = <%= django_log_level %> 
+
+
         }
 
         /***** Project folder *****/
         this.fs.copyTpl(this.templatePath('manage.py'), this.destinationPath('manage.py'));
         this.fs.copyTpl(this.templatePath('README.md'), this.destinationPath('README_backend.md'));
 
-
+        this.fs.copyTpl(this.templatePath('backend/__init__.py'), this.destinationPath('backend/__init__.py'));
         this.fs.copyTpl(this.templatePath('backend/README.md'), this.destinationPath('backend/README.md'));
         this.fs.copyTpl(this.templatePath('backend/urls.py'), this.destinationPath('backend/urls.py'));
 
@@ -244,6 +251,9 @@ var DjangoPolymerGenerator = generators.Base.extend({
         this.fs.copyTpl(this.templatePath('backend/views/__init__.py'), this.destinationPath('backend/views/__init__.py'));
         this.fs.copyTpl(this.templatePath('backend/views/README.md'), this.destinationPath('backend/views/README.md'));
         this.fs.copyTpl(this.templatePath('backend/views/mixins.py'), this.destinationPath('backend/views/mixins.py'));
+
+        // for logging
+        this.fs.copyTpl(this.templatePath('var/log/project.log'), this.destinationPath('var/log/project.log'));        
 
     },
 

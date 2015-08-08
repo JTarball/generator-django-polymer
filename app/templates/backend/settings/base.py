@@ -8,14 +8,14 @@ import os
 import sys
 import logging
 
-from utils import logger
+from backend.utils import logger
 
 
 # Django settings for project.
 DEBUG = False  # As of Django 1.5 all logging messages reaching the django logger are sent to Console if (DEBUG=True)
 TEMPLATE_DEBUG = False
-DEV_SETTINGS = True
-LOG_LEVEL = logging.DEBUG
+DEV_SETTINGS = <%= django_dev_settings %>
+LOG_LEVEL = <%= django_log_level %> 
 
 # General Directory Structure
 # +++ apps
@@ -55,12 +55,12 @@ LOG_LEVEL = logging.DEBUG
 
 DATABASES = {
     'default': {
-        'ENGINE':   '<%= db_engine %>',                # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME':     '<%= db_name %>',                  # Or path to database file if using sqlite3.
-        'USER':     '<%= db_user %>',                  # Not used with sqlite3.
-        'PASSWORD': '<%= db_password %>',              # Not used with sqlite3.
-        'HOST':     '<%= db_host %>',                  # Set to empty string for localhost. Not used with sqlite3.
-        'PORT':     '<%= db_port %>',                  # Set to empty string for default. Not used with sqlite3.
+        'ENGINE':   <%= db_engine %>,                # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME':     <%= db_name %>,                  # Or path to database file if using sqlite3.
+        'USER':     <%= db_user %>,                  # Not used with sqlite3.
+        'PASSWORD': <%= db_password %>,              # Not used with sqlite3.
+        'HOST':     <%= db_host %>,                  # Set to empty string for localhost. Not used with sqlite3.
+        'PORT':     <%= db_port %>,                  # Set to empty string for default. Not used with sqlite3.
     }
 }
 
@@ -81,7 +81,7 @@ sys.path.append(APP_ROOT)
 # (This should be unique if this page was used created using generator-django-polymer)
 SECRET_KEY = '<%= secret_key %>'
 
-ADMINS = (('<%= admin_name %>', '<%= admin_email %>'),)
+ADMINS = ((<%= admin_name %>, <%= admin_email %>),)
 
 MANAGERS = ADMINS
 
@@ -217,13 +217,13 @@ THIRD_PATH_APPS = (
 # HACK BEFORE DJANGO.CONTRIB.AUTH
 LOCAL_APPS = (
     #'search',
-    'accounts',
-    'accounts.registration',
-    'accounts.profiles',
-    'blog',
+    #'accounts',
+    #'accounts.registration',
+    #'accounts.profiles',
+    #'blog',
     #'content',
     #'mailbot',
-    'search',
+    #'search',
     #'shop',
     #'cms',
     #'stats',
